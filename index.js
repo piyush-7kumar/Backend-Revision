@@ -1,41 +1,17 @@
-const http = require("http");
-const currencies = require("./currencies.json")
-
-const server= http.createServer((req,res)=>{
-
-    const serverInfo = {
-        serverName : "CodesandBox Server",
-        version : "1.0.0",
-        currentDate : new Date().toLocaleDateString(),
-        currentTime : new Date().toLocaleTimeString(),
-    }
+const express = require("express");
+const currencyRoutes = require("./routes/currencies.routes");
+const userRoutes = require("./routes/users.routes")
+const {verifyAuth} = require("./middleware/verify.auth")
+const app = express();
+const port = 8082;
 
 
-    switch (req.url) {
-        case "/status":
-            res.writeHead(200,{"Content-Type": "application/json" })
-            res.write(JSON.stringify(serverInfo))
-            res.end();
-            break;
-        
-        case "/currencies":
-            res.writeHead(200,{"Content-Type": "application/json" })
-            res.write(JSON.stringify(currencies))
-            res.end();
-            break;
-    
-        default: 
-            res.writeHead(200,{"Content-Type": "text/html" })
-            res.write(`<h1>Currency Database</h1>`)
-            res.end();
-            break;
-    }
-    
-    
-});
+app.use("/currencies",currencyRoutes)
+app.use(verifyAuth)
+app.use("/users",userRoutes)
 
 
 
-server.listen(8082,()=>{
-    console.log("Listening...")
-})
+app.listen(port,()=>{
+    console.log("listening at ",port);
+}); 

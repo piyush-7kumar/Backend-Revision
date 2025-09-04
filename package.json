@@ -20,7 +20,9 @@
   "homepage": "https://github.com/piyush-7kumar/Backend-Revision#readme",
   "description": "",
   "dependencies": {
+    "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "joi": "^18.0.1",
     "nodemon": "^3.1.10"
   }
 }
