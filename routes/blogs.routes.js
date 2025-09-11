@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {getAllBlogs, getBlogs, createNewBlog,deleteBlogById,updateBlogById} = require("../controllers/blogs.controller");
+const {getAllBlogs, createNewBlog,deleteBlogById,updateBlogById, getBlogs} = require("../controllers/blogs.controller");
 
 router.get("/", getAllBlogs)
 router.get("/search",getBlogs)
