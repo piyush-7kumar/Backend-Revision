@@ -11,14 +11,35 @@ const getAllBlogs = async(req,res)=>{
 }
 
 
+const getBlogs = async (req, res) => {
+  const { title, author } = req.query;
+
+  try {
+    const result = await Blogs.find({ 
+      $or: [
+        title ? { title: { $regex: new RegExp(title, "i") } } : null,
+        author ? { "authors.email": new RegExp(`^${author}$`, "i") } : null
+      ].filter(Boolean)
+    });
+
+    res.json(result);
+
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Couldn't fetch blog posts. Please try again", 
+      error 
+    });
+  }
+};
+
+
 
 
 const createNewBlog = async(req,res)=>{
-    const {title} = req.body
-    
     try {
-        const newBlogDoc = new Blogs({ title });
-        await newBlogDoc.save(); // <-- important
+        const body = req.body
+        const newBlogDoc = new Blogs(body);
+        await newBlogDoc.save(); 
 
         res.status(201).json({ message: "Blog created", blog: newBlogDoc });
     } catch (error) {
@@ -26,7 +47,7 @@ const createNewBlog = async(req,res)=>{
             // duplicate key error
             return res.status(400).json({ error: "Title must be unique" });
         }
-        res.status(500).json({ error: "Something went wrong", details: error.message });
+        res.status(500).json({ error: "Couldn't create new blog post. Please try again", details: error.message });
     }
 }
 
@@ -54,4 +75,4 @@ const updateBlogById = async(req,res)=>{
 }
 
 
-module.exports = {getAllBlogs, createNewBlog, deleteBlogById,updateBlogById}
+module.exports = {getAllBlogs, getBlogs, createNewBlog, deleteBlogById,updateBlogById}
